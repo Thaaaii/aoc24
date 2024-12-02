@@ -12,8 +12,8 @@ func Solution() {
 	reports := parseInput()
 	safeReports := calcSafeReports(reports)
 	fmt.Println("Day 2, Solution 1 result: ", safeReports)
-	dampenedSafeReports := calcDampenedSafeReports(reports)
-	fmt.Println("Day 2, Solution 2 result: ", dampenedSafeReports)
+	reallySafeReports := calcReallySafeReports(reports)
+	fmt.Println("Day 2, Solution 2 result: ", reallySafeReports)
 }
 
 func parseInput() [][]int {
@@ -56,22 +56,22 @@ func calcSafeReports(reports [][]int) int {
 }
 
 func isSafe(report []int) bool {
-	if len(report) <= 1 {
+	inc := report[1] > report[0]
+
+	if inc {
+		for i := 1; i < len(report); i++ {
+			diff := report[i] - report[i-1]
+			if !(diff >= 1 && diff <= 3) {
+				return false
+			}
+		}
+
 		return true
 	}
 
-	checkSafety := func(a, b int) bool {
-		return a < b && abs(a-b) <= 3
-	}
-
-	if report[0] > report[1] {
-		checkSafety = func(a, b int) bool {
-			return a > b && abs(a-b) <= 3
-		}
-	}
-
 	for i := 1; i < len(report); i++ {
-		if !checkSafety(report[i-1], report[i]) {
+		diff := report[i-1] - report[i]
+		if !(diff >= 1 && diff <= 3) {
 			return false
 		}
 	}
@@ -79,10 +79,10 @@ func isSafe(report []int) bool {
 	return true
 }
 
-func calcDampenedSafeReports(reports [][]int) int {
+func calcReallySafeReports(reports [][]int) int {
 	sum := 0
 	for _, report := range reports {
-		if isSafeDampened(report) {
+		if isReallySafe(report) {
 			sum++
 		}
 	}
@@ -90,41 +90,19 @@ func calcDampenedSafeReports(reports [][]int) int {
 	return sum
 }
 
-func isSafeDampened(report []int) bool {
-	if len(report) <= 1 {
+func isReallySafe(report []int) bool {
+	if isSafe(report) {
 		return true
 	}
 
-	checkSafety := func(a, b int) bool {
-		return a < b && abs(a-b) <= 3
-	}
-
-	if report[0] > report[1] {
-		checkSafety = func(a, b int) bool {
-			return a > b && abs(a-b) <= 3
+	for i := 0; i < len(report); i++ {
+		modifiedList := make([]int, len(report))
+		copy(modifiedList, report)
+		modifiedList = append(modifiedList[:i], modifiedList[i+1:]...)
+		if isSafe(modifiedList) {
+			return true
 		}
 	}
 
-	for i := 1; i < len(report); i++ {
-		if !checkSafety(report[i-1], report[i]) {
-			safety1 := append(report[:i-1], report[i:]...)
-			safety2 := append(report[:i], report[i+1:]...)
-			if isSafe(safety1) || isSafe(safety2) {
-				fmt.Println(report, safety1, safety2)
-				return true
-			}
-
-			return false
-		}
-	}
-
-	return true
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-
-	return x
+	return false
 }
