@@ -12,14 +12,15 @@ func Solution() {
 	mulStatemens := parseMulStatementsOnly(string(data))
 	sumAll := sumMultiplication(mulStatemens)
 	fmt.Println("Day 3, Solution 1 result: ", sumAll)
-	sumConditional := sumConditionalMultiplication()
+	allStatements := parseMulAndCondStatements(string(data))
+	sumConditional := sumConditionalMultiplication(allStatements)
 	fmt.Println("Day 3, Solution 2 result: ", sumConditional)
 }
 
 func parseFile() []byte {
 	data, err := os.ReadFile("day3/input.txt")
 	if err != nil {
-		panic("Error reading file")
+		panic("Error reading file!")
 	}
 
 	return data
@@ -31,13 +32,19 @@ func parseMulStatementsOnly(data string) []string {
 	return statements
 }
 
+func parseMulAndCondStatements(data string) []string {
+	reg := regexp.MustCompile(`don't\(\)|do\(\)|mul\(\d{1,3},\d{1,3}\)`)
+	statements := reg.FindAllString(data, -1)
+	return statements
+}
+
 func parseNumbersFromStatement(statement string) (int, int) {
 	reg := regexp.MustCompile(`\d{1,3}`)
 	nums := reg.FindAllString(statement, -1)
 	a, err1 := strconv.Atoi(nums[0])
 	b, err2 := strconv.Atoi(nums[1])
 	if err1 != nil || err2 != nil {
-		panic("Errow while parsing numbers from mul statment!")
+		panic("Error while parsing numbers from mul statment!")
 	}
 
 	return a, b
@@ -54,5 +61,21 @@ func sumMultiplication(statements []string) int {
 }
 
 func sumConditionalMultiplication(statements []string) int {
-	return 0
+	sum := 0
+	executeMul := true
+	for _, statement := range statements {
+		switch statement {
+		case "don't()":
+			executeMul = false
+		case "do()":
+			executeMul = true
+		default:
+			if executeMul {
+				a, b := parseNumbersFromStatement(statement)
+				sum += a * b
+			}
+		}
+	}
+
+	return sum
 }
