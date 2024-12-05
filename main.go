@@ -2,10 +2,12 @@ package main
 
 import (
 	"flag"
+
 	"github.com/Thaaaii/aoc24/day1"
 	"github.com/Thaaaii/aoc24/day2"
 	"github.com/Thaaaii/aoc24/day3"
 	"github.com/Thaaaii/aoc24/day4"
+	"github.com/Thaaaii/aoc24/day5"
 )
 
 var (
@@ -14,6 +16,7 @@ var (
 		2: day2.Solution,
 		3: day3.Solution,
 		4: day4.Solution,
+		5: day5.Solution,
 	}
 )
 
