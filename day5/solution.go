@@ -12,7 +12,8 @@ func Solution() {
 	updates, rules := parseData()
 	middlePageSum := calcMiddlePageNumberSum(updates, rules)
 	fmt.Println("Day 5, Solution 1 result: ", middlePageSum)
-	fmt.Println("Day 5, Solution 2 result: ")
+	incorrectMiddlePageSum := calcIncorrectlyMiddlePageNumberSum(updates, rules)
+	fmt.Println("Day 5, Solution 2 result: ", incorrectMiddlePageSum)
 }
 
 type rule struct {
@@ -69,7 +70,8 @@ func parseData() ([][]int, []rule) {
 func calcMiddlePageNumberSum(updates [][]int, rules []rule) int {
 	sum := 0
 	for _, update := range updates {
-		if isValidUpdate(update, rules) {
+		indexMap := createIndexMap(update)
+		if _, ok := isValidUpdate(indexMap, rules); ok {
 			mid := len(update) / 2
 			sum += update[mid]
 		}
@@ -78,13 +80,18 @@ func calcMiddlePageNumberSum(updates [][]int, rules []rule) int {
 	return sum
 }
 
-func isValidUpdate(update []int, rules []rule) bool {
+func createIndexMap(update []int) map[int]int {
 	indexMap := make(map[int]int)
 	for i, val := range update {
 		indexMap[val] = i
 	}
 
-	for _, r := range rules {
+	return indexMap
+}
+
+// isValidUpdate returns idx of failed rule and bool of operation
+func isValidUpdate(indexMap map[int]int, rules []rule) (int, bool) {
+	for idx, r := range rules {
 		_, okBefore := indexMap[r.before]
 		_, okAfter := indexMap[r.after]
 		if !okBefore || !okAfter {
@@ -92,9 +99,32 @@ func isValidUpdate(update []int, rules []rule) bool {
 		}
 
 		if indexMap[r.before] > indexMap[r.after] {
-			return false
+			return idx, false
 		}
 	}
 
-	return true
+	return -1, true
+}
+
+func calcIncorrectlyMiddlePageNumberSum(updates [][]int, rules []rule) int {
+	sum := 0
+	for _, update := range updates {
+		indexMap := createIndexMap(update)
+		idx, ok := isValidUpdate(indexMap, rules)
+		if ok {
+			continue
+		}
+
+		for !ok {
+			i, j := indexMap[rules[idx].before], indexMap[rules[idx].after]
+			indexMap[rules[idx].before], indexMap[rules[idx].after] = j, i
+			update[i], update[j] = update[j], update[i]
+			idx, ok = isValidUpdate(indexMap, rules)
+		}
+
+		mid := len(update) / 2
+		sum += update[mid]
+	}
+
+	return sum
 }
