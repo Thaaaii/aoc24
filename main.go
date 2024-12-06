@@ -8,6 +8,7 @@ import (
 	"github.com/Thaaaii/aoc24/day3"
 	"github.com/Thaaaii/aoc24/day4"
 	"github.com/Thaaaii/aoc24/day5"
+	"github.com/Thaaaii/aoc24/day6"
 )
 
 var (
@@ -17,6 +18,7 @@ var (
 		3: day3.Solution,
 		4: day4.Solution,
 		5: day5.Solution,
+		6: day6.Solution,
 	}
 )
 
