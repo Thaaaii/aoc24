@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 
+	"github.com/Thaaaii/aoc24/day10"
 	"github.com/Thaaaii/aoc24/day7"
 	"github.com/Thaaaii/aoc24/day9"
 
@@ -16,14 +17,15 @@ import (
 
 var (
 	solutionsMap = map[int]func(){
-		1: day1.Solution,
-		2: day2.Solution,
-		3: day3.Solution,
-		4: day4.Solution,
-		5: day5.Solution,
-		6: day6.Solution,
-		7: day7.Solution,
-		9: day9.Solution,
+		1:  day1.Solution,
+		2:  day2.Solution,
+		3:  day3.Solution,
+		4:  day4.Solution,
+		5:  day5.Solution,
+		6:  day6.Solution,
+		7:  day7.Solution,
+		9:  day9.Solution,
+		10: day10.Solution,
 	}
 )
 
