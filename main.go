@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/Thaaaii/aoc24/day10"
+	"github.com/Thaaaii/aoc24/day11"
 	"github.com/Thaaaii/aoc24/day7"
 	"github.com/Thaaaii/aoc24/day9"
 
@@ -26,6 +27,7 @@ var (
 		7:  day7.Solution,
 		9:  day9.Solution,
 		10: day10.Solution,
+		11: day11.Solution,
 	}
 )
 
